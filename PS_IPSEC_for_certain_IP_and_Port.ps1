@@ -20,11 +20,12 @@ $REMOTE_IP = Read-Host "Enter remote IP: "
 $REMOTE_PORT = Read-Host "Enter remote PORT: " 
 
 $MYPSK = Read-Host "Enter PSK: " 
+$NAME = Read-Host "Enter RULE NAME: (i.e. RDP )" 
 
-
-
+$NAME = $NAME + ' TCP ' + $REMOTE_PORT 
 if($SERVER) {
-New-NetFirewallRule -DisplayName 'RDP 2323 IN' -Profile @('Domain', 'Private') -Direction inbound -Action Allow -Protocol TCP -LocalAddress $REMOTE_IP -RemotePort $REMOTE_PORT -Authentication Required -Encryption Required
+	$NAME=$NAME + ' IN IPSEC PSK'
+New-NetFirewallRule -DisplayName $NAME  -Profile @('Any') -Direction inbound -Action Allow -Protocol TCP -LocalAddress $REMOTE_IP -LocalPort $REMOTE_PORT -Authentication Required -Encryption Required
 
 }
 
@@ -34,9 +35,9 @@ New-NetFirewallRule -DisplayName 'RDP 2323 IN' -Profile @('Domain', 'Private') -
 
 
 if($CLIENT) {
-$name='RDP ' + $REMOTE_PORT + ' OUT'
+$NAME=$NAME + ' OUT IPSEC PSK'
 
-New-NetFirewallRule -DisplayName $name -Profile @('Domain', 'Private') -Direction outbound -Action Allow -Protocol TCP -RemoteAddress $REMOTE_IP -RemotePort $REMOTE_PORT -Authentication Required -Encryption Required
+New-NetFirewallRule -DisplayName $NAME -Profile @('Domain', 'Private') -Direction outbound -Action Allow -Protocol TCP -RemoteAddress $REMOTE_IP -RemotePort $REMOTE_PORT -Authentication Required -Encryption Required
 
 }
 
@@ -48,7 +49,7 @@ New-NetFirewallRule -DisplayName $name -Profile @('Domain', 'Private') -Directio
 
 " IPSEC Connection Security Rule erstellen"
 
-New-NetIPsecRule -DisplayName RDP_PSK -InboundSecurity Require -OutboundSecurity Require -RemoteAddress $REMOTE_IP -RemotePort $REMOTE_PORT -Protocol TCP
+New-NetIPsecRule -DisplayName $NAME -InboundSecurity Require -OutboundSecurity Require -RemoteAddress $REMOTE_IP -RemotePort $REMOTE_PORT -Protocol TCP
 
 
 
@@ -61,4 +62,4 @@ $AUTH = New-NetIPsecPhase1AuthSet -DisplayName PSK_P1_Set -Proposal $PSK
 
 "PSK auf Rule anwenden:"
 
-Set-NetIPsecRule -DisplayName RDP_PSK -Phase1AuthSet $AUTH.Name
+Set-NetIPsecRule -DisplayName $NAME -Phase1AuthSet $AUTH.Name
