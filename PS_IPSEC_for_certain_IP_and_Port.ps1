@@ -19,6 +19,11 @@ $REMOTE_IP = Read-Host "Enter remote (=Server) IP: "
 
 $REMOTE_PORT = Read-Host "Enter remote PORT: " 
 
+$PROTO_ANSWER = Read-Host "Enter Protokoll: (T)CP or (U)DP ?" 
+if($PROTO_ANSWER.contains("U")){
+$PROTO ='UDP'
+}else{$PROTO = "TCP"}
+
 $MYPSK = Read-Host "Enter PSK: " 
 $NAME = Read-Host "Enter RULE NAME: (i.e. RDP )" 
 
@@ -43,7 +48,7 @@ $FW_SCOPE+='Private'
 
 
 	$NAME=$NAME + ' IN IPSEC PSK'
-New-NetFirewallRule -DisplayName $NAME  -Profile $FW_SCOPE -Direction inbound -Action Allow -Protocol TCP -LocalAddress $REMOTE_IP -LocalPort $REMOTE_PORT -Authentication Required -Encryption Required
+New-NetFirewallRule -DisplayName $NAME  -Profile $FW_SCOPE -Direction inbound -Action Allow -Protocol $PROTO -LocalAddress $REMOTE_IP -LocalPort $REMOTE_PORT -Authentication Required -Encryption Required
 
 }
 
@@ -55,7 +60,7 @@ New-NetFirewallRule -DisplayName $NAME  -Profile $FW_SCOPE -Direction inbound -A
 if($CLIENT) {
 $NAME=$NAME + ' OUT IPSEC PSK'
 
-New-NetFirewallRule -DisplayName $NAME -Profile @('All') -Direction outbound -Action Allow -Protocol TCP -RemoteAddress $REMOTE_IP -RemotePort $REMOTE_PORT -Authentication Required -Encryption Required
+New-NetFirewallRule -DisplayName $NAME -Profile @('All') -Direction outbound -Action Allow -Protocol $PROTO -RemoteAddress $REMOTE_IP -RemotePort $REMOTE_PORT -Authentication Required -Encryption Required
 
 }
 
@@ -67,7 +72,7 @@ New-NetFirewallRule -DisplayName $NAME -Profile @('All') -Direction outbound -Ac
 
 " IPSEC Connection Security Rule erstellen"
 
-New-NetIPsecRule -DisplayName $NAME -InboundSecurity Require -OutboundSecurity Require -RemoteAddress $REMOTE_IP -RemotePort $REMOTE_PORT -Protocol TCP
+New-NetIPsecRule -DisplayName $NAME -InboundSecurity Require -OutboundSecurity Require -RemoteAddress $REMOTE_IP -RemotePort $REMOTE_PORT -Protocol $PROTO
 
 
 
