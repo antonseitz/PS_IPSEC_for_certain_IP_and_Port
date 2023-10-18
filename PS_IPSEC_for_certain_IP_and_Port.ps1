@@ -15,7 +15,7 @@ else {
 
 
 
-$REMOTE_IP = Read-Host "Enter remote IP: " 
+$REMOTE_IP = Read-Host "Enter remote (=Server) IP: " 
 
 $REMOTE_PORT = Read-Host "Enter remote PORT: " 
 
@@ -27,17 +27,23 @@ if($SERVER) {
 
 $FW_SCOPE_ANSWER = Read-Host "Enter RULE Scope: (A)ll, (D)omain, (P)ublic, and/or Pri(V)ate" 
 $FW_SCOPE=@()
-if($FW_SCOPE_ANSWER -contains "A"){
+if($FW_SCOPE_ANSWER.contains("A")){
 $FW_SCOPE+='All'
 }
-if($FW_SCOPE_ANSWER -contains "D"){
+if($FW_SCOPE_ANSWER.contains("D")){
 $FW_SCOPE+='Domain'
+}
+if($FW_SCOPE_ANSWER.contains("P")){
+$FW_SCOPE+='Public'
+}
+if($FW_SCOPE_ANSWER.contains("V")){
+$FW_SCOPE+='Private'
 }
 
 
-'Domain', 'Private'
+
 	$NAME=$NAME + ' IN IPSEC PSK'
-New-NetFirewallRule -DisplayName $NAME  -Profile @('Any') -Direction inbound -Action Allow -Protocol TCP -LocalAddress $REMOTE_IP -LocalPort $REMOTE_PORT -Authentication Required -Encryption Required
+New-NetFirewallRule -DisplayName $NAME  -Profile $FW_SCOPE -Direction inbound -Action Allow -Protocol TCP -LocalAddress $REMOTE_IP -LocalPort $REMOTE_PORT -Authentication Required -Encryption Required
 
 }
 
