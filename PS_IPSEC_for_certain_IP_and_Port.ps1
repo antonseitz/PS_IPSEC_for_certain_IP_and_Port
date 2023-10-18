@@ -30,7 +30,7 @@ $NAME = Read-Host "Enter RULE NAME: (i.e. RDP )"
 $NAME = $NAME + ' TCP ' + $REMOTE_PORT 
 if($SERVER) {
 
-$FW_SCOPE_ANSWER = Read-Host "Enter RULE Scope: (A)ll, (D)omain, (P)ublic, and/or Pri(V)ate" 
+$FW_SCOPE_ANSWER = Read-Host "Enter RULE Scope: (A)ny, (D)omain, (P)ublic, and/or Pri(V)ate" 
 $FW_SCOPE=@()
 if($FW_SCOPE_ANSWER.contains("A")){
 $FW_SCOPE+='Any'
@@ -60,7 +60,7 @@ New-NetFirewallRule -DisplayName $NAME  -Profile $FW_SCOPE -Direction inbound -A
 if($CLIENT) {
 $NAME=$NAME + ' OUT IPSEC PSK'
 
-New-NetFirewallRule -DisplayName $NAME -Profile @('All') -Direction outbound -Action Allow -Protocol $PROTO -RemoteAddress $REMOTE_IP -RemotePort $REMOTE_PORT -Authentication Required -Encryption Required
+New-NetFirewallRule -DisplayName $NAME -Profile @('Any') -Direction outbound -Action Allow -Protocol $PROTO -RemoteAddress $REMOTE_IP -RemotePort $REMOTE_PORT -Authentication Required -Encryption Required
 
 }
 
