@@ -27,7 +27,7 @@ $PROTO ='UDP'
 $MYPSK = Read-Host "Enter PSK: " 
 $NAME = Read-Host "Enter RULE NAME: (i.e. RDP )" 
 
-$NAME = $NAME + ' TCP ' + $REMOTE_PORT 
+$NAME = $NAME + ' ' + $PROTO + ' ' + $REMOTE_PORT 
 if($SERVER) {
 
 $FW_SCOPE_ANSWER = Read-Host "Enter RULE Scope: (A)ny, (D)omain, (P)ublic, and/or Pri(V)ate" 
