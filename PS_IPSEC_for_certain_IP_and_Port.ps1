@@ -33,7 +33,7 @@ if($SERVER) {
 $FW_SCOPE_ANSWER = Read-Host "Enter RULE Scope: (A)ll, (D)omain, (P)ublic, and/or Pri(V)ate" 
 $FW_SCOPE=@()
 if($FW_SCOPE_ANSWER.contains("A")){
-$FW_SCOPE+='All'
+$FW_SCOPE+='Any'
 }
 if($FW_SCOPE_ANSWER.contains("D")){
 $FW_SCOPE+='Domain'
