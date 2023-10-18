@@ -60,7 +60,7 @@ New-NetFirewallRule -DisplayName $NAME  -Profile $FW_SCOPE -Direction inbound -A
 if($CLIENT) {
 $NAME=$NAME + ' OUT IPSEC PSK'
 
-New-NetFirewallRule -DisplayName $NAME -Profile @('All') -Direction outbound -Action Allow -Protocol $PROTO -RemoteAddress $REMOTE_IP -RemotePort $REMOTE_PORT -Authentication Required -Encryption Required
+New-NetFirewallRule -DisplayName $NAME -Profile @('Any') -Direction outbound -Action Allow -Protocol $PROTO -RemoteAddress $REMOTE_IP -RemotePort $REMOTE_PORT -Authentication Required -Encryption Required
 
 }
 
